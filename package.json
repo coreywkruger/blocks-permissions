@@ -1,0 +1,27 @@
+{
+  "name": "blocks-permissions",
+  "version": "1.7.1",
+  "description": "",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/coreywkruger/blocks-permissions.git"
+  },
+  "author": "Caige Nichols <caigesn@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/coreywkruger/blocks-permissions/issues"
+  },
+  "homepage": "https://github.com/coreywkruger/blocks-permissions#readme",
+  "dependencies": {
+    "async": "^1.5.0",
+    "node-uuid": "^1.4.3",
+    "pg": "^4.4.3",
+    "pg-hstore": "^2.3.2",
+    "sequelize": "^3.12.2"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^2.3.3"
+  }
+}
