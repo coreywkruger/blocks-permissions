@@ -7,6 +7,9 @@ module.exports = function(sequelize, DataTypes) {
     entity_id: {
       type: DataTypes.STRING
     },
+    entity_type: {
+      type: DataTypes.STRING
+    },
     role_id: {
       type: DataTypes.UUID
     }

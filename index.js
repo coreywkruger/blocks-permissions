@@ -1,18 +1,18 @@
-const PermissionistDB = require('./db'),
-  PermissionistRepo = require('./src/repos/permissions'),
-  PermissionistAPI = require('./api');
+const PermissionsDB = require('./db'),
+  PermissionsRepo = require('./src/repos/permissions'),
+  PermissionsAPI = require('./api');
 
 var initialize = function(config, cb) {
-  PermissionistDB.initialize(config, function(err, db) {
+  PermissionsDB.initialize(config, function(err, db) {
     if (err !== null) {
       cb(err);
     } else {
-      cb(null, new PermissionistAPI(new PermissionistRepo(db)));
+      cb(null, new PermissionsAPI(new PermissionsRepo(db)));
     }
   });
 };
 
 module.exports = {
   initialize: initialize,
-  api: PermissionistAPI
+  api: PermissionsAPI
 };

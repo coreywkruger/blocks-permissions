@@ -2,7 +2,7 @@ var fs = require("fs");
 var path = require("path");
 var Sequelize = require("sequelize");
 
-var initialize = function(config, cb) {
+var initialize = function(connectionString, cb) {
   var env = process.env.NODE_ENV || "development";
   var db = {
       models: {}
@@ -10,14 +10,13 @@ var initialize = function(config, cb) {
   var logging = config.logging || 'console';
   var loggingMap = {
     'console': console.log,
-    // 'logger': logger.log.bind(null, 'info'),
     'none': function(){}
   };
   var loggingFunc = loggingMap[logging] || loggingMap.console;
   var options = {
     logging: loggingFunc
   };
-  var sequelize = new Sequelize('postgres://' + config.username + ':' + config.password + '@' + config.host + ':' + config.port + '/' + config.database, options);
+  var sequelize = new Sequelize(connectionString, options);
   var modelsDir = __dirname + '/src/models';
 
   // Import models

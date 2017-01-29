@@ -5,6 +5,9 @@ module.exports = function(sequelize, DataTypes) {
       primaryKey: true
     },
     owner_id: {
+      type: DataTypes.UUID,
+    },
+    owner_type: {
       type: DataTypes.STRING,
     },
     name: {

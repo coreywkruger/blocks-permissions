@@ -33,21 +33,47 @@ PermissionRepo.prototype.getPermissionsForEntityByRole = function(entity, id, cb
   }.bind(this));
 };
 
-PermissionRepo.prototype.getPermissionsForEntity = function(entity, id, cb) {
+PermissionRepo.prototype.getEntityPermissionsForEntity = function(entity_id, target_id, cb) {
   this.db.sequelize.query(`
   SELECT perms.permission, perms.id 
-  FROM (SELECT DISTINCT 
+  FROM (
+    SELECT DISTINCT 
       p.id, p.permission, er.entity_id 
-    FROM permissions p INNER JOIN 
-      role_permissions rp 
-    ON rp.permission_id = p.id INNER JOIN 
-      entity_roles er on er.role_id = rp.role_id 
+    FROM permissions p INNER JOIN entity_permissions ep 
+      ON ep.permission_id = p.id AND ep.target_id = :target_id
+    ORDER BY p.permission ASC)
+  AS perms 
+  WHERE perms.entity_id = :entity_id`, 
+  {
+    replacements: {
+      entity_id: entity_id,
+      target_id: target_id
+    },
+    type: this.db.sequelize.QueryTypes.SELECT
+  })
+  .then(function(permissions) {
+    return cb(null, permissions);
+  })
+  .catch(function(err) {
+    console.log(err);
+    return cb(err);
+  });
+};
+
+PermissionRepo.prototype.getRolePermissionsForEntity = function(id, cb) {
+  this.db.sequelize.query(`
+  SELECT perms.permission, perms.id 
+  FROM (
+    SELECT DISTINCT 
+      p.id, p.permission, er.entity_id 
+    FROM permissions p INNER JOIN role_permissions rp 
+      ON rp.permission_id = p.id INNER JOIN entity_roles er 
+        ON er.role_id = rp.role_id 
     ORDER BY p.permission ASC)
   AS perms 
   WHERE perms.entity_id = :id`, 
   {
     replacements: {
-      entity: entity,
       id: id
     },
     type: this.db.sequelize.QueryTypes.SELECT
@@ -64,9 +90,9 @@ PermissionRepo.prototype.getPermissionsForEntity = function(entity, id, cb) {
 PermissionRepo.prototype.getPermissionsForRole = function(role, cb) {
   this.db.sequelize.query(`
   SELECT p.id, p.permission 
-  FROM permissions p INNER JOIN 
-    role_permissions rp ON p.id = rp.permission_id INNER JOIN 
-      roles r on r.id = rp.role_id 
+  FROM permissions p INNER JOIN role_permissions rp 
+    ON p.id = rp.permission_id INNER JOIN roles r 
+      ON r.id = rp.role_id 
   WHERE r.name = :role 
   ORDER BY p.permission ASC`, 
   {
