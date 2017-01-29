@@ -34,6 +34,11 @@ PermissionistAPI.prototype.getPermissionsForApp = function(appId, cb) {
 	this.repo.getPermissionsForApp(appId, cb);
 };
 
+// Get permissions for entity grouped by role
+PermissionistAPI.prototype.getPermissionsForEntityByRole = function(entity, id, cb) {
+	this.repo.getPermissionsForEntityByRole(entity, id, cb);
+};
+
 // Get entity permissions for a particular entity
 PermissionistAPI.prototype.getEntityPermissionsForEntity = function(entity_id, target_id, cb) {
 	this.repo.getEntityPermissionsForEntity(entity_id, target_id, cb);

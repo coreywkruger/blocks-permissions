@@ -33,6 +33,33 @@ PermissionRepo.prototype.getPermissionsForEntityByRole = function(entity, id, cb
   }.bind(this));
 };
 
+PermissionRepo.prototype.getPermissionsForEntity = function(entity, id, cb) {
+  this.db.sequelize.query(`
+  SELECT perms.permission, perms.id 
+  FROM (
+    SELECT DISTINCT p.id, p.permission, er.entity_type, er.entity_id 
+    FROM permissions p INNER JOIN role_permissions rp 
+      ON rp.permission_id = p.id INNER JOIN entity_roles er 
+        ON er.role_id = rp.role_id 
+    ORDER BY p.permission ASC) 
+  AS perms 
+  WHERE perms.entity_type = :entity AND perms.entity_id = :id`, 
+  {
+    replacements: {
+      entity: entity,
+      id: id
+    },
+    type: this.db.sequelize.QueryTypes.SELECT
+  })
+  .then(function(permissions) {
+    return cb(null, permissions);
+  })
+  .catch(function(err) {
+    console.log(err);
+    return cb(err);
+  });
+};
+
 PermissionRepo.prototype.getEntityPermissionsForEntity = function(entity_id, target_id, cb) {
   this.db.sequelize.query(`
   SELECT perms.permission, perms.id 
