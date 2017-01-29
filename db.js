@@ -2,7 +2,7 @@ var fs = require("fs");
 var path = require("path");
 var Sequelize = require("sequelize");
 
-var initialize = function(connectionString, cb) {
+var initialize = function(config, cb) {
   var env = process.env.NODE_ENV || "development";
   var db = {
       models: {}
@@ -16,7 +16,7 @@ var initialize = function(connectionString, cb) {
   var options = {
     logging: loggingFunc
   };
-  var sequelize = new Sequelize(connectionString, options);
+  var sequelize = new Sequelize(config.database, options);
   var modelsDir = __dirname + '/src/models';
 
   // Import models
