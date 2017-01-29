@@ -39,6 +39,16 @@ PermissionistAPI.prototype.getPermissionsForEntityByRole = function(entity, id, 
 	this.repo.getPermissionsForEntityByRole(entity, id, cb);
 };
 
+// Get entity permissions for a particular entity
+PermissionistAPI.prototype.getEntityPermissionsForEntity = function(entity_id, target_id, cb) {
+	this.repo.getEntityPermissionsForEntity(entity_id, target_id, cb);
+};
+
+// Get entities who have a particular permission for a certain target entity
+PermissionistAPI.prototype.getEntitiesByTargetId = function(target_id, permission_name, cb) {
+	this.repo.getEntitiesByTargetId(target_id, permission_name, cb);
+};
+
 // Get permissions for entity type and id
 PermissionistAPI.prototype.getPermissionsForEntity = function(entity, id, cb) {
 	this.repo.getPermissionsForEntity(entity, id, cb);
