@@ -11,7 +11,7 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING
     },
     target_id: {
-      type: DateTypes.STRING
+      type: DataTypes.STRING
     },
     permission_id: {
       type: DataTypes.UUID
