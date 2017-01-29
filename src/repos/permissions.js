@@ -60,6 +60,33 @@ PermissionRepo.prototype.getEntityPermissionsForEntity = function(entity_id, tar
   });
 };
 
+PermissionRepo.prototype.getEntitiesByTargetId = function(target_id, permission_name, cb) {
+  this.db.sequelize.query(`
+  SELECT perms.id, perms.email 
+  FROM (
+    SELECT DISTINCT 
+      u.id, u.email, ep.target_id
+    FROM entity_permissions ep INNER JOIN permissions p
+      ON ep.target_id = :target_id AND p.permission = :permission_name
+    ORDER BY p.permission ASC)
+  AS perms 
+  WHERE perms.target_id = :target_id`, 
+  {
+    replacements: {
+      target_id: target_id,
+      permission_name: permission_name
+    },
+    type: this.db.sequelize.QueryTypes.SELECT
+  })
+  .then(function(permissions) {
+    return cb(null, permissions);
+  })
+  .catch(function(err) {
+    console.log(err);
+    return cb(err);
+  });
+};
+
 PermissionRepo.prototype.getRolePermissionsForEntity = function(id, cb) {
   this.db.sequelize.query(`
   SELECT perms.permission, perms.id 
