@@ -88,15 +88,14 @@ PermissionRepo.prototype.getEntityPermissionsForEntity = function(entity_id, tar
 
 PermissionRepo.prototype.getEntitiesByTargetId = function(target_id, permission_name, cb) {
   this.db.sequelize.query(`
-  SELECT perms.id, perms.email 
-  FROM (
-    SELECT DISTINCT 
-      u.id, u.email, ep.target_id
-    FROM entity_permissions ep INNER JOIN permissions p
-      ON ep.target_id = :target_id AND p.permission = :permission_name
-    ORDER BY p.permission ASC)
-  AS perms 
-  WHERE perms.target_id = :target_id`, 
+    SELECT DISTINCT
+      u.id, u.email, ep.target_id, ep.entity_id
+    FROM entity_permissions ep 
+      INNER JOIN permissions p
+        ON ep.permission_id = p.id AND ep.target_id = :target_id AND p.permission = :permission_name
+      INNER JOIN users u
+        ON u.id = (ep.entity_id)::UUID
+    ORDER BY u.email ASC`, 
   {
     replacements: {
       target_id: target_id,
@@ -104,8 +103,8 @@ PermissionRepo.prototype.getEntitiesByTargetId = function(target_id, permission_
     },
     type: this.db.sequelize.QueryTypes.SELECT
   })
-  .then(function(permissions) {
-    return cb(null, permissions);
+  .then(function(users) {
+    return cb(null, users);
   })
   .catch(function(err) {
     console.log(err);
