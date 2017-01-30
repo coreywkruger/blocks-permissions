@@ -367,6 +367,33 @@ PermissionRepo.prototype.assignPermissionToRole = function(roleId, permissionId,
   }).catch(cb);
 }
 
+PermissionRepo.prototype.assignPermissionToEntity = function(entityId, targetId, permissions, cb){
+
+  var newValues = [];
+  for(var i = permissions.length - 1 ; i > 0 ; i--){
+    newValues.push(
+      `('${uuid.v4()}', '${entityId}', 'user', '${targetId}',
+        (SELECT p.id FROM permissions AS p WHERE p.permission = '${permissions[i]}')
+      )`
+    );
+  }
+
+  this.db.sequelize.query(`
+  INSERT INTO entity_permissions 
+    (id, entity_id, entity_type, target_id, permission_id) 
+  VALUES 
+    ${newValues.join(',')}
+  `, {
+    type: this.db.sequelize.QueryTypes.INSERT
+  })
+  .then(function() {
+    return cb(null);
+  })
+  .catch(function(err) {
+    return cb(err);
+  })
+}
+
 PermissionRepo.prototype.removePermissionFromRole = function(roleId, permissionId, cb) {
   this.db.models.RolePermission.destroy({
     where: {

@@ -95,6 +95,11 @@ PermissionistAPI.prototype.assignPermissionToRole = function(roleId, permissionI
   return this.repo.assignPermissionToRole(roleId, permissionId, cb);
 };
 
+// 
+PermissionistAPI.prototype.assignPermissionToEntity = function(entityId, targetId, permission, cb){
+  return this.repo.assignPermissionToEntity(entityId, targetId, permission, cb);
+};
+
 PermissionistAPI.prototype.removePermissionFromRole = function(roleId, permissionId, cb){
   return this.repo.removePermissionFromRole(roleId, permissionId, cb);
 }
