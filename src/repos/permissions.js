@@ -35,15 +35,15 @@ PermissionRepo.prototype.getPermissionsForEntityByRole = function(entity, id, cb
 
 PermissionRepo.prototype.getPermissionsForEntity = function(entity, id, cb) {
   this.db.sequelize.query(`
-  SELECT perms.permission, perms.id 
+  SELECT perms.permission, perms.id
   FROM (
-    SELECT DISTINCT p.id, p.permission, er.entity_type, er.entity_id 
+    SELECT DISTINCT p.id, p.permission, er.entity_id, er.entity_type
     FROM permissions p INNER JOIN role_permissions rp 
       ON rp.permission_id = p.id INNER JOIN entity_roles er 
         ON er.role_id = rp.role_id 
-    ORDER BY p.permission ASC) 
-  AS perms 
-  WHERE perms.entity_type = :entity AND perms.entity_id = :id`, 
+    ORDER BY p.permission ASC)
+  AS perms
+  WHERE perms.entity_id = :id AND perms.entity_type = :entity`,
   {
     replacements: {
       entity: entity,
@@ -64,8 +64,7 @@ PermissionRepo.prototype.getEntityPermissionsForEntity = function(entity_id, tar
   this.db.sequelize.query(`
   SELECT perms.permission, perms.id 
   FROM (
-    SELECT DISTINCT 
-      p.id, p.permission, er.entity_id 
+    SELECT DISTINCT p.id, p.permission, ep.entity_id 
     FROM permissions p INNER JOIN entity_permissions ep 
       ON ep.permission_id = p.id AND ep.target_id = :target_id
     ORDER BY p.permission ASC)
