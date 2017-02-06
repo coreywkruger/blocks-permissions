@@ -86,16 +86,13 @@ PermissionRepo.prototype.getEntityPermissionsForEntity = function(entity_id, tar
   });
 };
 
-PermissionRepo.prototype.getEntitiesByTargetId = function(target_id, permission_name, cb) {
+PermissionRepo.prototype.getEntitiesByTargetId = function(target_id, permission_name, cb) { // u.id, u.name, u.email, ep.target_id, ep.entity_id
   this.db.sequelize.query(`
     SELECT DISTINCT
-      u.id, u.email, ep.target_id, ep.entity_id
+      ep.entity_id
     FROM entity_permissions ep 
       INNER JOIN permissions p
-        ON ep.permission_id = p.id AND ep.target_id = :target_id AND p.permission = :permission_name
-      INNER JOIN users u
-        ON u.id = (ep.entity_id)::UUID
-    ORDER BY u.email ASC`, 
+        ON ep.permission_id = p.id AND ep.target_id = :target_id AND p.permission = :permission_name`, 
   {
     replacements: {
       target_id: target_id,
